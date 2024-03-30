@@ -1,7 +1,0 @@
-version: "Apple Swift version 5.4.2 (swiftlang-1205.0.28.2 clang-1205.0.19.57)"
-options: "b5cf24af02ebac0bb6680d3d84f51ae6"
-build_time: [1710947178, 568317000]
-inputs:
-  "/Users/user/Documents/myApp/Flutter/lifetimer/macos/Runner/MainFlutterWindow.swift": [1709795118, 0]
-  "/Users/user/Documents/myApp/Flutter/lifetimer/macos/Runner/AppDelegate.swift": [1709795118, 0]
-  "/Users/user/Documents/myApp/Flutter/lifetimer/macos/Flutter/GeneratedPluginRegistrant.swift": [1710947156, 258672416]
