@@ -8,4 +8,5 @@ class Globals {
   static int formatTime = 1;
   static bool changeResult = false;
   static String appBarTitle = "";
+  static bool isPopupShown = false;
 }

@@ -71,9 +71,9 @@ image
 file:///Users/user/.pub-cache/hosted/pub.dev/image-4.1.7/
 file:///Users/user/.pub-cache/hosted/pub.dev/image-4.1.7/lib/
 intl
-3.0
-file:///Users/user/.pub-cache/hosted/pub.dev/intl-0.19.0/
-file:///Users/user/.pub-cache/hosted/pub.dev/intl-0.19.0/lib/
+2.12
+file:///Users/user/.pub-cache/hosted/pub.dev/intl-0.18.1/
+file:///Users/user/.pub-cache/hosted/pub.dev/intl-0.18.1/lib/
 js
 3.1
 file:///Users/user/.pub-cache/hosted/pub.dev/js-0.7.1/
@@ -234,6 +234,10 @@ flutter
 3.2
 file:///Users/user/Documents/development/flutter/packages/flutter/
 file:///Users/user/Documents/development/flutter/packages/flutter/lib/
+flutter_localizations
+3.2
+file:///Users/user/Documents/development/flutter/packages/flutter_localizations/
+file:///Users/user/Documents/development/flutter/packages/flutter_localizations/lib/
 flutter_test
 3.2
 file:///Users/user/Documents/development/flutter/packages/flutter_test/

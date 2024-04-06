@@ -1,0 +1,1 @@
+ /Users/user/Documents/myApp/Flutter/lifetimer/.dart_tool/flutter_build/bbdd209301aedd0004a6e6f1514b37a0/native_assets.yaml: 

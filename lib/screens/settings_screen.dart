@@ -28,7 +28,7 @@ class SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
+    return WillPopScope.new(
       // Android のバックボタンなどで戻る場合にも確認ダイアログを表示する
       onWillPop: () => _showSaveConfirmation(context),
       child: Scaffold(
@@ -203,5 +203,6 @@ class SettingsScreenState extends State<SettingsScreen> {
     Globals.appBarTitle = _titleController.text;
     Globals.formatTime = _selectedFormat;
     Globals.changeResult = true;
+    Globals.isPopupShown = false;
   }
 }

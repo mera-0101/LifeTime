@@ -110,6 +110,12 @@
       "languageVersion": "2.19"
     },
     {
+      "name": "flutter_localizations",
+      "rootUri": "file:///Users/user/Documents/development/flutter/packages/flutter_localizations",
+      "packageUri": "lib/",
+      "languageVersion": "3.2"
+    },
+    {
       "name": "flutter_test",
       "rootUri": "file:///Users/user/Documents/development/flutter/packages/flutter_test",
       "packageUri": "lib/",
@@ -129,9 +135,9 @@
     },
     {
       "name": "intl",
-      "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/intl-0.19.0",
+      "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/intl-0.18.1",
       "packageUri": "lib/",
-      "languageVersion": "3.0"
+      "languageVersion": "2.12"
     },
     {
       "name": "js",
@@ -374,7 +380,7 @@
       "languageVersion": "3.1"
     }
   ],
-  "generated": "2024-03-30T11:36:54.795927Z",
+  "generated": "2024-04-06T06:59:22.798908Z",
   "generator": "pub",
   "generatorVersion": "3.3.1"
 }

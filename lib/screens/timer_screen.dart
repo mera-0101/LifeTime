@@ -5,6 +5,7 @@ import '/utils/timer_utils.dart';
 import '/global.dart';
 import 'settings_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../widgets/popup_widget.dart';
 
 class TimerScreen extends StatefulWidget {
   const TimerScreen({Key? key}) : super(key: key);
@@ -31,8 +32,9 @@ class TimerScreenState extends State<TimerScreen> with TickerProviderStateMixin 
         });
       });
     _animationController.repeat();
-
+  
     _initState();
+    
   }
 
   Future<void> _initState() async {
@@ -53,6 +55,7 @@ class TimerScreenState extends State<TimerScreen> with TickerProviderStateMixin 
       Globals.spendMonth = prefs.getInt('spendMonth') ?? 0;
       Globals.spendDay = prefs.getInt('spendDay') ?? 0;
       Globals.appBarTitle = prefs.getString('appBarTitle') ?? 'Life Timer';
+      Globals.isPopupShown = false;
     });
     _saveTimerData();
     _remainingSeconds = TimerUtils.calculateRemainingSeconds();
@@ -86,6 +89,12 @@ class TimerScreenState extends State<TimerScreen> with TickerProviderStateMixin 
     String remainingTime = TimerUtils.changeFormat(
       _remainingSeconds > 0 ? _remainingSeconds : 0
     );
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // タイマースクリーンが表示された直後かつポップアップがまだ表示されていない場合にポップアップを表示する
+      _showPopup();
+      print("aaa");
+    });
 
     return Scaffold(
       appBar: AppBar(
@@ -143,6 +152,18 @@ class TimerScreenState extends State<TimerScreen> with TickerProviderStateMixin 
         _remainingSeconds = TimerUtils.calculateRemainingSeconds();
         Globals.changeResult = false;
       });
+    }
+  }
+
+  void _showPopup() {
+    if (!Globals.isPopupShown) {
+      Globals.isPopupShown = true;
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return  PopupWidget();
+        },
+      );
     }
   }
 }
