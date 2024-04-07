@@ -2,9 +2,9 @@ import 'dart:math';
 
 class PopupMessages {
   static final List<String> messages = [
-    "メッセージ1",
-    "メッセージ2",
-    "メッセージ3",
+    "there is no rain that does not stop",
+    "when are you going to do it? Now!!",
+    "the only impossible journey is the one you never begin",
     // 他にもメッセージを追加
   ];
 
