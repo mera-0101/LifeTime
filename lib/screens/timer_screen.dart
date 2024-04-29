@@ -6,6 +6,8 @@ import '/global.dart';
 import 'settings_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../widgets/popup_widget.dart';
+import 'add_timer_screen.dart';
+import 'dart:convert';
 
 class TimerScreen extends StatefulWidget {
   const TimerScreen({Key? key}) : super(key: key);
@@ -17,8 +19,8 @@ class TimerScreen extends StatefulWidget {
 class TimerScreenState extends State<TimerScreen> with TickerProviderStateMixin {
   late Timer _timer;
   late AnimationController _animationController;
-  int _remainingSeconds = 0; // 仮の残り時間（1時間）
   double _wavePhase = 0.0;
+  List<TimerUtils> timerList = [];
 
   @override
   void initState() {
@@ -32,49 +34,29 @@ class TimerScreenState extends State<TimerScreen> with TickerProviderStateMixin 
         });
       });
     _animationController.repeat();
-  
     _initState();
-    
   }
 
   Future<void> _initState() async {
     await _loadTimerData();
-    _setupTimer();
   }
 
   Future<void> _loadTimerData() async {
     final prefs = await SharedPreferences.getInstance();
+    final List<String> timerListJson = prefs.getStringList('timerListJson') ?? [];
     setState(() {
-      Globals.eventDate = DateTime.fromMillisecondsSinceEpoch(
-        prefs.getInt('eventDate') ?? DateTime.now().millisecondsSinceEpoch
-      );
-      Globals.setDate = DateTime.fromMillisecondsSinceEpoch(
-        prefs.getInt('setDate') ?? DateTime.now().millisecondsSinceEpoch
-      );
-      Globals.spendYear = prefs.getInt('spendYear') ?? 0;
-      Globals.spendMonth = prefs.getInt('spendMonth') ?? 0;
-      Globals.spendDay = prefs.getInt('spendDay') ?? 0;
       Globals.appBarTitle = prefs.getString('appBarTitle') ?? 'Life Timer';
+      Globals.formatTime = prefs.getInt('formatTime') ?? 1;
       Globals.isPopupShown = false;
+      timerList = timerListJson.map((f) => TimerUtils.fromJson(json.decode(f))).toList();
     });
     _saveTimerData();
-    _remainingSeconds = TimerUtils.calculateRemainingSeconds();
   }
 
   void _saveTimerData() async {
     final prefs = await SharedPreferences.getInstance();
-    prefs.setInt('eventDate', Globals.eventDate.millisecondsSinceEpoch);
-    prefs.setInt('spendYear', Globals.spendYear);
-    prefs.setInt('spendMonth', Globals.spendMonth);
-    prefs.setInt('spendDay', Globals.spendDay);
-  }
-
-  void _setupTimer() {
-    _timer = Timer.periodic(const Duration(seconds: 1), (_) {
-      if (_remainingSeconds > 0) {
-        setState(() => _remainingSeconds--);
-      }
-    });
+    List<String> timerListJson = timerList.map((f) => json.encode(f.toJson())).toList();
+    prefs.setStringList('timerListJson', timerListJson);
   }
 
   @override
@@ -86,14 +68,8 @@ class TimerScreenState extends State<TimerScreen> with TickerProviderStateMixin 
 
   @override
   Widget build(BuildContext context) {
-    String remainingTime = TimerUtils.changeFormat(
-      _remainingSeconds > 0 ? _remainingSeconds : 0
-    );
-
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      // タイマースクリーンが表示された直後かつポップアップがまだ表示されていない場合にポップアップを表示する
       _showPopup();
-      print("aaa");
     });
 
     return Scaffold(
@@ -109,38 +85,87 @@ class TimerScreenState extends State<TimerScreen> with TickerProviderStateMixin 
       ),
       body: Stack(
         children: [
-          Positioned.fill(
-            child: AnimatedBuilder(
-              animation: _animationController,
-              builder: (_, __) => CustomPaint(
-                painter: WaterWavePainter(
-                  wavePhase: _wavePhase,
-                  waterHeightRatio: _remainingSeconds / TimerUtils.calculateTotalTimeSeconds(),
-                ),
-              ),
-            ),
-          ),
-          Center(
-            child:Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                // HourglassWidget(),
-                // SizedBox(height: 24),
-                Text(
-                        remainingTime,
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: Theme.of(context).colorScheme.secondary,
+          ListView.builder(
+            itemCount: timerList.length,
+            itemBuilder: (context, index) {
+              return Card(
+                child: Stack(
+                  children: [
+                    Positioned.fill(
+                      child: AnimatedBuilder(
+                        animation: _animationController,
+                        builder: (_, __) => CustomPaint(
+                          painter: WaterWavePainter(
+                            wavePhase: _wavePhase + index * 0.2,
+                            waterHeightRatio: TimerUtils.calculateRemainingSeconds(timerList[index]) / TimerUtils.calculateTotalTimeSeconds(timerList[index]),
+                          ),
                         ),
                       ),
-              ],
-            ),
+                    ),
+                    ListTile(
+                      title: Text(timerList[index].timerName),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            TimerUtils.changeFormat(TimerUtils.calculateRemainingSeconds(timerList[index]))
+                          ),
+                          SizedBox(width: (MediaQuery.of(context).size.width-150)*0.40),
+                          IconButton(
+                            icon: const Icon(Icons.edit),
+                            onPressed: () async {
+                              bool isEdited = await Navigator.of(context).push(
+                                MaterialPageRoute(builder: (context) {
+                                  return AddTimerScreen(timer: timerList[index]);
+                                }),
+                              );
+                              if(isEdited){
+                                setState(() {
+                                  timerList[index] = Globals.newTimer;
+                                  _saveTimerData();
+                                });
+                              }
+                            },
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.delete),
+                            onPressed: () {
+                              setState(() {
+                                timerList.removeAt(index);
+                                _saveTimerData();
+                              });
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
           ),
         ],
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          final bool isSetNewTimer = await Navigator.of(context).push(
+            MaterialPageRoute(builder: (context) {
+              TimerUtils newTimer = TimerUtils(timerName: "", timerSetDay: DateTime.now(), timerGoalDay: DateTime.now());
+              return AddTimerScreen(timer: newTimer);
+            }),
+          );
+          if(isSetNewTimer){
+            setState(() {
+              timerList.add(Globals.newTimer);
+              _saveTimerData();
+            });
+          }
+        },
+        child: const Icon(Icons.add),
+      ),
     );
   }
+
   void _openSettingsScreen(BuildContext context) async {
     await Navigator.push(
       context,
@@ -149,7 +174,6 @@ class TimerScreenState extends State<TimerScreen> with TickerProviderStateMixin 
 
     if (Globals.changeResult) {
       setState(() {
-        _remainingSeconds = TimerUtils.calculateRemainingSeconds();
         Globals.changeResult = false;
       });
     }
@@ -161,7 +185,7 @@ class TimerScreenState extends State<TimerScreen> with TickerProviderStateMixin 
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return  PopupWidget();
+          return  const PopupWidget();
         },
       );
     }
@@ -179,18 +203,17 @@ class WaterWavePainter extends CustomPainter {
     final paint = Paint()..color = Colors.black26;
     final path = Path();
 
-    const  waveAmplitude = 20.0; // 波の振幅
-    final waterTop = size.height * (1 - waterHeightRatio);
+    const waveAmplitude = 5.0;
+    final waterTop = size.width * waterHeightRatio;
 
-    path.moveTo(0, waterTop);
-    for (double x = 0.0; x <= size.width; x++) {
-      final y = waterTop +
-          math.sin(wavePhase + x * 0.02) * waveAmplitude;
+    path.moveTo(waterTop, 0);
+    for (double y = 0.0; y <= size.height; y++) {
+      final x = waterTop + math.sin(wavePhase + y * 0.06) * waveAmplitude;
       path.lineTo(x, y);
     }
 
-    path.lineTo(size.width, size.height);
     path.lineTo(0, size.height);
+    path.lineTo(0, 0);
     path.close();
 
     canvas.drawPath(path, paint);

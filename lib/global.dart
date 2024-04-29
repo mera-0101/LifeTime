@@ -1,12 +1,14 @@
 // global.dart
+import 'package:lifetimer/utils/timer_utils.dart';
+
 class Globals {
-  static DateTime eventDate = DateTime.now();
-  static int spendYear = 0;
-  static int spendMonth = 0;
-  static int spendDay = 0;
-  static DateTime setDate = DateTime.now();
-  static int formatTime = 1;
+  static int formatTime = 2;
   static bool changeResult = false;
   static String appBarTitle = "";
   static bool isPopupShown = false;
+  static TimerUtils newTimer = TimerUtils(
+    timerName: "write your goal",
+    timerSetDay: DateTime.now(),
+    timerGoalDay: DateTime.now(),
+  );
 }

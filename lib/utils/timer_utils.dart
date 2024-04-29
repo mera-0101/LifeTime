@@ -1,42 +1,47 @@
-import 'dart:convert';
-import 'package:shared_preferences/shared_preferences.dart';
-import '/models/timer_data.dart';
 import '/global.dart';
 
 class TimerUtils {
-  static const String _timerDataKey = 'timer_data_key';
+  String timerName;
+  DateTime timerSetDay;
+  DateTime timerGoalDay;
 
-  static Future<TimerData> loadTimerData() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? timerDataJson = prefs.getString(_timerDataKey);
+  TimerUtils({
+    required this.timerName,
+    required this.timerSetDay,
+    required this.timerGoalDay,
+  });
 
-    if (timerDataJson != null) {
-      Map<String, dynamic> json = jsonDecode(timerDataJson);
-      return TimerData.fromJson(json);
-    }
+  TimerUtils.fromJson(Map<String, dynamic> json)
+      : timerName = json['timerName'],
+        timerSetDay = DateTime.fromMillisecondsSinceEpoch(json['timerSetDay']),
+        timerGoalDay = DateTime.fromMillisecondsSinceEpoch(json['timerGoalDay']);
 
-    // Return default values if not set
-    return TimerData(lifespan: 0, currentAge: 0);
-  }
+  Map<String, dynamic> toJson() => {
+        'timerName': timerName,
+        'timerSetDay': timerSetDay.millisecondsSinceEpoch,
+        'timerGoalDay': timerGoalDay.millisecondsSinceEpoch,
+      };
 
-  static int calculateTotalTimeSeconds(){
-    int total = Duration(days: Globals.spendYear*365 + Globals.spendMonth*30 + Globals.spendDay).inSeconds;
-    total += Globals.eventDate.difference(Globals.setDate).inSeconds;
+  static int calculateTotalTimeSeconds(TimerUtils timerUtils) {
+    int total = timerUtils.timerGoalDay.difference(timerUtils.timerSetDay).inSeconds;
     return total;
   }
 
-  static int calculateRemainingSeconds() {
-    // Calculate the difference between the goal date and the current date in seconds
-    int remainingSeconds = Globals.eventDate.difference(DateTime.now()).inSeconds;
-    return remainingSeconds >= 0 ? remainingSeconds : 0; // Ensure non-negative value
+  static int calculateRemainingSeconds(TimerUtils timerUtils) {
+    int remainingSeconds = timerUtils.timerGoalDay.difference(DateTime.now()).inSeconds;
+    return remainingSeconds >= 0 ? remainingSeconds : 0;
   }
 
   static String changeFormat(int seconds) {
     switch (Globals.formatTime) {
-      case 1: return _formatToMinutesAndSeconds(seconds);
-      case 2: return _formatToHoursMinutesAndSeconds(seconds);
-      case 3: return _formatToDaysHoursMinutesAndSeconds(seconds);
-      default: return '$seconds s'; // Default to seconds if no format is specified
+      case 1:
+        return _formatToMinutesAndSeconds(seconds);
+      case 2:
+        return _formatToHoursMinutesAndSeconds(seconds);
+      case 3:
+        return _formatToDaysHoursMinutesAndSeconds(seconds);
+      default:
+        return '$seconds s';
     }
   }
 
