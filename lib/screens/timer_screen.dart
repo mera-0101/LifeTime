@@ -46,7 +46,7 @@ class TimerScreenState extends State<TimerScreen> with TickerProviderStateMixin 
     final List<String> timerListJson = prefs.getStringList('timerListJson') ?? [];
     setState(() {
       Globals.appBarTitle = prefs.getString('appBarTitle') ?? 'Life Timer';
-      Globals.formatTime = prefs.getInt('formatTime') ?? 1;
+      Globals.formatTime = prefs.getInt('formatTime') ?? 2;
       Globals.isPopupShown = false;
       timerList = timerListJson.map((f) => TimerUtils.fromJson(json.decode(f))).toList();
     });

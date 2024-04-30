@@ -21,26 +21,24 @@ class SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () => _showSaveConfirmation(context),
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Settings'),
-          centerTitle: true,
-          backgroundColor: Theme.of(context).primaryColor,
-        ),
-        body: SingleChildScrollView(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-              const Padding(padding: EdgeInsets.all(5.0)),
-              _buildAppSettingsSection(),
-              const Padding(padding: EdgeInsets.all(5.0)),
-              _buildTimeFormatSection(),
-              const SizedBox(height: 32),
-              _buildSaveButton(),
-            ],
-          ),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Settings'),
+        centerTitle: true,
+        backgroundColor: Theme.of(context).primaryColor,
+        automaticallyImplyLeading: false,
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            const Padding(padding: EdgeInsets.all(5.0)),
+            _buildAppSettingsSection(),
+            const Padding(padding: EdgeInsets.all(5.0)),
+            _buildTimeFormatSection(),
+            const SizedBox(height: 32),
+            _buildSaveButton(),
+          ],
         ),
       ),
     );
@@ -106,26 +104,6 @@ class SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-  Future<bool> _showSaveConfirmation(BuildContext context) async {
-    final confirmed = await showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Unsaved Changes'),
-        content: const Text('Are you sure you want to leave without saving?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('No'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('Yes'),
-          ),
-        ],
-      ),
-    );
-    return confirmed ?? false;
-  }
 
   void _saveSettingsAndClose() async {
     _saveSettings();
