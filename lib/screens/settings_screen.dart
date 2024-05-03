@@ -23,7 +23,11 @@ class SettingsScreenState extends State<SettingsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Settings'),
+        title: const Text(
+          'Settings',
+          style:  TextStyle(
+            color: Color.fromARGB(255, 219, 219, 219), // テキストの色を白色に設定
+          ),),
         centerTitle: true,
         backgroundColor: Theme.of(context).primaryColor,
         automaticallyImplyLeading: false,
@@ -100,7 +104,7 @@ class SettingsScreenState extends State<SettingsScreen> {
         padding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
       ),
-      child: const Text('Save', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+      child: const Text('Save', style: TextStyle(color: Color.fromARGB(255, 219, 219, 219),fontSize: 18, fontWeight: FontWeight.bold)),
     );
   }
 
@@ -118,6 +122,6 @@ class SettingsScreenState extends State<SettingsScreen> {
     Globals.appBarTitle = _titleController.text;
     Globals.formatTime = _selectedFormat;
     Globals.changeResult = true;
-    Globals.isPopupShown = false;
+    Globals.isPopupShown = true;
   }
 }

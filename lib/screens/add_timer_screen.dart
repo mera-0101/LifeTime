@@ -32,7 +32,12 @@ class AddTimerScreenState extends State<AddTimerScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Add or Edit Timer'),
+        title: const Text(
+          'Add or Edit Timer',
+          style: TextStyle(
+            color: Colors.white, // テキストの色を白色に設定
+          ),),
+        automaticallyImplyLeading: false,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -44,14 +49,55 @@ class AddTimerScreenState extends State<AddTimerScreen> {
               style: const TextStyle(color: Colors.blue),
             ),
             const SizedBox(height: 8),
+
             TextField(
               controller: _timerNameController,
               onChanged: (String value) {
                 setState(() {
-                  Globals.newTimer.timerName = value;
+                  final String sanitizedValue = value.replaceAll(RegExp(r'[0-9]'), ''); // 数字を削除して、残った文字列の長さを取得
+                  final int totalLength = sanitizedValue.length * 3 + (value.length - sanitizedValue.length) * 4; // 文字の場合は3文字、数字の場合は4文字としてカウント
+                  if (totalLength <= 72) {
+                    Globals.newTimer.timerName = value;
+                  } else {
+                    // 72文字を超える場合は、メッセージを表示
+                    // _timerNameController.text = _timerNameController.text.substring(0, 72);
+                    // カーソル位置を最後尾に移動する
+                    _timerNameController.selection = TextSelection.fromPosition(
+                      TextPosition(offset: _timerNameController.text.length),
+                    );
+                    // または、以下のようにすることで、入力を受け付けないようにもできます
+                    // _timerNameController.text = '';
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          title: const Text('character count over'),
+                          actions: <Widget>[
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: const Text('OK'),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  }
                 });
               },
+              // maxLength:ljk 72, // 総文字数制限
+              // buildCounter: (BuildContext context,
+              //     {required int currentLength, required bool isFocused, required int? maxLength}) {
+              //   final String sanitizedValue = _timerNameController.text.replaceAll(RegExp(r'[0-9]'), '');
+              //   final int totalLength = sanitizedValue.length * 3+ (_timerNameController.text.length - sanitizedValue.length) * 4;
+              //   return Text(
+              //     '$totalLength / $maxLength',
+              //     style: TextStyle(color: isFocused ? Colors.red : null),
+              //   );
+              // },
             ),
+
             const SizedBox(height: 8),
             _buildGoalDateTile(),
             const SizedBox(height: 16),
@@ -62,6 +108,9 @@ class AddTimerScreenState extends State<AddTimerScreen> {
                   isSetTimer = true;
                   Navigator.of(context).pop(isSetTimer);
                 },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color.fromARGB(255, 78, 78, 78), // ボタンの背景色を灰色に設定
+                ),
                 child: const Text('Add or Edit Timer', style: TextStyle(color: Colors.white)),
               ),
             ),
@@ -72,6 +121,9 @@ class AddTimerScreenState extends State<AddTimerScreen> {
                 onPressed: () {
                   Navigator.of(context).pop(isSetTimer);
                 },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color.fromARGB(255, 255, 255, 255), // ボタンの背景色を灰色に設定
+                ),
                 child: const Text('Cancel'),
               ),
             ),

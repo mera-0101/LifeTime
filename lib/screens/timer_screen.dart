@@ -74,11 +74,20 @@ class TimerScreenState extends State<TimerScreen> with TickerProviderStateMixin 
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(Globals.appBarTitle),
+        title: Text(
+          Globals.appBarTitle,
+          style: const TextStyle(
+              color: Color.fromARGB(255, 219, 219, 219), // テキストの色を白色に設定
+            ),
+          ),
+        
         centerTitle: true,
         actions: [
           IconButton(
-            icon: const Icon(Icons.settings),
+            icon: const Icon(
+              Icons.settings,
+              color: Colors.black, // アイコンの色を赤色に設定
+            ),
             onPressed: () => _openSettingsScreen(context),
           ),
         ],
@@ -103,14 +112,23 @@ class TimerScreenState extends State<TimerScreen> with TickerProviderStateMixin 
                       ),
                     ),
                     ListTile(
-                      title: Text(timerList[index].timerName),
+                      leading: SizedBox(
+                        width: MediaQuery.of(context).size.width / 5, // 画面の4分の1の幅に設定
+                        child: Text(
+                          timerList[index].timerName,
+                          style: const TextStyle(fontSize: 12),
+                          overflow: TextOverflow.clip, // テキストが四角形の外側にはみ出す場合、クリップする
+                        ),
+                      ),
+                      title: Text(
+                        TimerUtils.changeFormat(TimerUtils.calculateRemainingSeconds(timerList[index])),
+                        style: const TextStyle(fontSize: 13),
+                        textAlign: TextAlign.center, // 中央寄せに設定
+                      ),
                       trailing: Row(
+                        mainAxisAlignment: MainAxisAlignment.end, // 右寄せ
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Text(
-                            TimerUtils.changeFormat(TimerUtils.calculateRemainingSeconds(timerList[index]))
-                          ),
-                          SizedBox(width: (MediaQuery.of(context).size.width-150)*0.40),
                           IconButton(
                             icon: const Icon(Icons.edit),
                             onPressed: () async {
