@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Life timer',
+      title: 'Tife',
       theme: ThemeData(
         primaryColor: Colors.black45,
         scaffoldBackgroundColor: Colors.grey[200], // 背景色をより暗いグレーに設定
