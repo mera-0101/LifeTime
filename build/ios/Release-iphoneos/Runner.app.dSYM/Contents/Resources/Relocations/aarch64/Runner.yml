@@ -1,6 +1,6 @@
 ---
 triple:          'arm64-apple-darwin'
-binary-path:     '/Users/user/Documents/myApp/Flutter/lifetimer/build/ios/Release-iphoneos/Runner.app/Runner'
+binary-path:     '/Users/user/Documents/myApp/Flutter/Tife/build/ios/Release-iphoneos/Runner.app/Runner'
 relocations:
   - { offsetInCU: 0x34, offset: 0xAF189, size: 0x8, addend: 0x0, symName: _RunnerVersionString, symObjAddr: 0x0, symBinAddr: 0x1000059B0, symSize: 0x0 }
   - { offsetInCU: 0x69, offset: 0xAF1BE, size: 0x8, addend: 0x0, symName: _RunnerVersionNumber, symObjAddr: 0x28, symBinAddr: 0x1000059D8, symSize: 0x0 }

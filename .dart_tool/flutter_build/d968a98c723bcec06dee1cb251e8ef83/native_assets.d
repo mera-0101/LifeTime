@@ -1,0 +1,1 @@
+ /Users/user/Documents/myApp/Flutter/Tife/.dart_tool/flutter_build/d968a98c723bcec06dee1cb251e8ef83/native_assets.yaml: 

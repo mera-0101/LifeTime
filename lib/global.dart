@@ -1,5 +1,5 @@
 // global.dart
-import 'package:lifetimer/utils/timer_utils.dart';
+import 'package:Tife/utils/timer_utils.dart';
 
 class Globals {
   static int formatTime = 2;
